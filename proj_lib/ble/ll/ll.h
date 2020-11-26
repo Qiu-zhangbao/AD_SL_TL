@@ -36,7 +36,7 @@ extern u8					blt_state;
 	#if MI_API_ENABLE
 #define         VENDOR_ID                       VENDOR_ID_MI
 	#else
-#define         VENDOR_ID                       0x0211
+#define         VENDOR_ID                       0x0804
 	#endif
 #endif
 #endif
@@ -441,7 +441,7 @@ byte0    byte3   byte4       byte5      byte6  byte(6+w-1)
 |             |         Header        |     Payload      |
 |             |<--               PDU                  -->|
 *-------------*------------------------------------------*
-note: type(1B):llid(2bit) nesn(1bit) sn(1bit) md(1bit),实际向RF 硬件FIFO中压数据，type只表示llid,其他bit位为0！
+note: type(1B):llid(2bit) nesn(1bit) sn(1bit) md(1bit),实锟斤拷锟斤拷RF 硬锟斤拷FIFO锟斤拷压锟斤拷锟捷ｏ拷type只锟斤拷示llid,锟斤拷锟斤拷bit位为0锟斤拷
 *******************************************************************************************************************************************************************************/
 
 

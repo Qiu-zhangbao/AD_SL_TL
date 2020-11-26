@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 #ifndef USER_REDEFINE_SCAN_RSP_EN          
-#define USER_REDEFINE_SCAN_RSP_EN           0
+#define USER_REDEFINE_SCAN_RSP_EN           1
 #endif
 
 // PWM_FREQ

@@ -250,17 +250,27 @@ void uuid_create_by_mac(u8 *mac,u8 *uuid)
 	static char name_string[]="www.widgets.com";
 	uuid_create_md5_from_name((uuid_mesh_t *)uuid, NameSpace_DNS, name_string, 15);
 	*/
-    uuid_mesh_t NameSpace_DNS = { /* 6ba7b810-9dad-11d1-80b4-00c04fd430c8 */
-            0x6ba7b810,
-            0x9dad,
-            0x11d1,
-            0x80, 0xb4, 
-            {0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8}
-    };
+    // uuid_mesh_t NameSpace_DNS = { /* 6ba7b810-9dad-11d1-80b4-00c04fd430c8 */
+    //         0x6ba7b810,
+    //         0x9dad,
+    //         0x11d1,
+    //         0x80, 0xb4, 
+    //         {0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8}
+    // };
         
-	char name_string[16] = {0};
-	memcpy(name_string,mac,6);
-	uuid_create_md5_from_name((uuid_mesh_t *)uuid, NameSpace_DNS, name_string, 15);
+	// char name_string[16] = {0};
+	// memcpy(name_string,mac,6);
+	// uuid_create_md5_from_name((uuid_mesh_t *)uuid, NameSpace_DNS, name_string, 15);
+
+	char set_uuid[16] = {0};
+	u8 value_rand[6];
+	for (u8 i = 0; i < 6; i++)
+	{
+		set_uuid[i] = mac[5-i];
+	}
+    generateRandomNum(6, value_rand);
+	memcpy(&set_uuid[10],value_rand,6);
+	memcpy(uuid,set_uuid,16);
 
     //special proc to set the mac address into the uuid part 
     #if MD_REMOTE_PROV
@@ -269,7 +279,7 @@ void uuid_create_by_mac(u8 *mac,u8 *uuid)
     #endif
 }
 
-#define NORMAL_MODE_DEV_UUID_CUSTOMIZE_EN       (0)
+#define NORMAL_MODE_DEV_UUID_CUSTOMIZE_EN       1
 
 void user_prov_multi_device_uuid()
 {
@@ -295,6 +305,7 @@ void user_prov_multi_device_uuid()
             #endif
             {
 			    uuid_create_by_mac(tbl_mac,prov_para.device_uuid);
+				flash_write_page(FLASH_ADR_DEV_UUID,16,prov_para.device_uuid);
 			}
 		}
     #endif

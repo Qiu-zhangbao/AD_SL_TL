@@ -24,6 +24,52 @@
 
 #include "proj/tl_common.h"
 
+#define PARA_MAX_LENGTH  8   
+
+typedef enum
+{
+	Get = 0x01,
+	Set = 0x02,
+	Delta = 0x03,
+	Toggle = 0x04,
+	Start = 0x05,
+	Status = 0x06,
+	Flash = 0x07
+}Action_t;
+
+typedef enum
+{
+	OnOff = 0x01,
+	Brightness = 0x02,
+	Temperature = 0x03,
+	Turn_off_Delay = 0x04,
+	Turn_on_or_off_timer = 0x05,
+	Universal_Time = 0x06,
+	UTC_Timer = 0x07,
+	Run_Time = 0x08,
+	Token_Info = 0x09,
+	AutoBrightness = 0x0a,
+	Device_Info = 0x30,
+	Remote_Mac = 0x31,
+	DB_version = 0x32,
+	UnproDevInfo = 0x33,
+	Log = 0x42,
+}Resource_t;
+
+typedef struct
+{
+	uint8_t Auth;
+	uint8_t CNO;
+	Action_t Action;
+	Resource_t Resource;
+	uint8_t Parameters[PARA_MAX_LENGTH];
+}playload_t;
+
+
+
+
+
+
 #if (VENDOR_MD_NORMAL_EN)
 // vendor model id
 #if TESTCASE_FLAG_ENABLE
@@ -36,8 +82,8 @@
     #else
 #define TEMP_VD_ID_MODEL                (VENDOR_ID)
     #endif
-#define VENDOR_MD_LIGHT_S               ((0x0000<<16) | (TEMP_VD_ID_MODEL))
-#define VENDOR_MD_LIGHT_C               ((0x0001<<16) | (TEMP_VD_ID_MODEL))
+#define VENDOR_MD_LIGHT_S               ((0x0001<<16) | (TEMP_VD_ID_MODEL))
+#define VENDOR_MD_LIGHT_C               ((0x0000<<16) | (TEMP_VD_ID_MODEL))
 #define VENDOR_MD_LIGHT_S2              ((0x0002<<16) | (TEMP_VD_ID_MODEL))
 #endif
 

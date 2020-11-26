@@ -97,12 +97,12 @@ extern "C" {
 #endif
 
 #ifndef HCI_LOG_FW_EN
-#define HCI_LOG_FW_EN   0
+#define HCI_LOG_FW_EN   1
 #if HCI_LOG_FW_EN
 	#if (MESH_USER_DEFINE_MODE == MESH_IRONMAN_MENLO_ENABLE)
 #define DEBUG_INFO_TX_PIN           		(PCBA_8258_SEL == PCBA_8258_C1T140A3_V1_1 ? GPIO_PB6 : GPIO_PD7)
 	#else
-#define DEBUG_INFO_TX_PIN           		GPIO_PB2
+#define DEBUG_INFO_TX_PIN           		GPIO_PB1//dongle D7    kit B1
 	#endif
 #define PRINT_DEBUG_INFO                    1
 #endif
@@ -228,7 +228,7 @@ extern "C" {
 //---------------  LED / PWM
 #if(PCBA_8258_SEL == PCBA_8258_DONGLE_48PIN)
 #define PWM_R       GPIO_PWM1A3		//red
-#define PWM_G       GPIO_PWM0A2		//green
+#define PWM_G       GPIO_PWM2_PWM0N_C4		//green
 #define PWM_B       GPIO_PWM3B0		//blue
 #define PWM_W       GPIO_PWM4B1		//white
 #elif(PCBA_8258_SEL == PCBA_8258_C1T140A3_V1_1)

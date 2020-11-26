@@ -130,7 +130,7 @@ asm(".global     __MCU_RUN_SRAM_EN");
 
 STATIC_ASSERT(TRANSMIT_CNT_DEF < 8);
 STATIC_ASSERT(TRANSMIT_CNT_DEF_RELAY < 8);
-STATIC_ASSERT(sizeof(mesh_scan_rsp_t) <= 31);
+// STATIC_ASSERT(sizeof(mesh_scan_rsp_t) <= 31);
 #if (CHIP_TYPE == CHIP_TYPE_8269)
 STATIC_ASSERT((0 == FLASH_1M_ENABLE) && (0 == PINGPONG_OTA_DISABLE));
 #endif
@@ -1818,7 +1818,6 @@ _USER_CAN_REDEFINE_ void mesh_scan_rsp_init()
 	foreach(i,sizeof(tbl_scanRsp.rsv_user)){
 		tbl_scanRsp.rsv_user[i] = 1 + i;
 	}
-	
 	tbl_scanRsp.type = GAP_ADTYPE_MANUFACTURER_SPECIFIC;	// manufacture data
 	tbl_scanRsp.len = sizeof(mesh_scan_rsp_t) - 1;
 	u8 rsp_len = tbl_scanRsp.len+1;
@@ -1826,7 +1825,20 @@ _USER_CAN_REDEFINE_ void mesh_scan_rsp_init()
 	rsp_len = ais_pri_data_set(&tbl_scanRsp.len);	
 	#endif
 	bls_ll_setScanRspData((u8 *)&tbl_scanRsp, rsp_len);
+#else
+	u8 tbl_scanRsp[31]={0};
+	u8 device_name[]={"TL_SL_20201126"};
+	//name
+	tbl_scanRsp[0] = sizeof(device_name)+1;
+	tbl_scanRsp[1] = GAP_ADTYPE_LOCAL_NAME_COMPLETE;
+	memcpy(&tbl_scanRsp[2], device_name, sizeof(device_name));
+	bls_ll_setScanRspData((u8 *)&tbl_scanRsp, sizeof(tbl_scanRsp));
+
 #endif
+
+
+
+
 }
 #else
 void mesh_ota_reboot_set(u8 type){}

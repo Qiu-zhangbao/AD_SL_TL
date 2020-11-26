@@ -30,7 +30,7 @@
 #include "proj_lib/sig_mesh/app_mesh.h"
 #include "vendor_model.h"
 #include "fast_provision_model.h"
-
+#include "../../vendor/common/mesh_config.h"
 #if ALI_MD_TIME_EN
 #include "user_ali_time.h"
 #endif
@@ -134,44 +134,144 @@ int cb_vd_group_g_get(u8 *par, int par_len, mesh_cb_fun_par_t *cb_par)
     }
 }
 
+// int cb_vd_group_g_set(u8 *par, int par_len, mesh_cb_fun_par_t *cb_par)
+// {
+//     int err = -1;
+// 	int pub_flag = 0;
+//     //model_g_light_s_t *p_model = (model_g_light_s_t *)cb_par->model;
+//     vd_group_g_set_t *p_set = (vd_group_g_set_t *)par;
+//     u8 sub_op = p_set->sub_op;
+
+//     if(!cb_par->retransaction){
+//         cb_vd_group_g_sub_set p_cb_set = (cb_vd_group_g_sub_set)search_vd_group_g_func(sub_op, SEARCH_VD_GROUP_G_FUNC_TYPE_SET);
+//         if(p_cb_set){
+//             pub_flag = p_cb_set(par, par_len, cb_par);
+//         }else{
+//             return -1;
+//         }
+//     }
+
+// #if DEBUG_CFG_CMD_GROUP_AK_EN
+//     if(par_len >= 3){
+//     	if(par[2] && (par[2]<=128) && BIT_IS_POW2(par[2])){
+//     		blt_rxfifo.num = par[2];
+//     	}
+// 	}
+// #endif
+
+//     if(VD_GROUP_G_SET_NOACK != cb_par->op){
+//         err = cb_vd_group_g_get(par, par_len, cb_par);
+//     }else{
+//         err = 0;
+//     }
+
+//     if(!err && pub_flag){
+//         if(is_vd_onoff_op(sub_op)){ // only onoff need publish now
+//             model_pub_check_set(ST_G_LEVEL_SET_PUB_NOW, cb_par->model, 1);
+//         }
+//     }
+    
+//     return err;
+// }
+
+void obfs(u8 *data, int len)
+{
+    uint32_t seed = data[1];
+    for (int i = 2; i < len; i++){
+        seed = 214013 * seed + 2531011;
+        data[i] ^= (seed >> 16) & 0xff;
+    }
+}
+
 int cb_vd_group_g_set(u8 *par, int par_len, mesh_cb_fun_par_t *cb_par)
 {
-    int err = -1;
+	int err = 0;
 	int pub_flag = 0;
-    //model_g_light_s_t *p_model = (model_g_light_s_t *)cb_par->model;
-    vd_group_g_set_t *p_set = (vd_group_g_set_t *)par;
-    u8 sub_op = p_set->sub_op;
+	st_pub_list_t pub_list = {{0}};
+	obfs(par,par_len);
+    playload_t *playload = (playload_t *)par;
 
-    if(!cb_par->retransaction){
-        cb_vd_group_g_sub_set p_cb_set = (cb_vd_group_g_sub_set)search_vd_group_g_func(sub_op, SEARCH_VD_GROUP_G_FUNC_TYPE_SET);
-        if(p_cb_set){
-            pub_flag = p_cb_set(par, par_len, cb_par);
-        }else{
-            return -1;
-        }
+	LOG_USER_MSG_INFO(par, par_len,"\r\n vendor data op:0x%04x,par_len:%d,par:", cb_par->op, par_len);
+			
+    if(!cb_par->retransaction)//不是重传的消息
+	{
+		if (playload->Resource == OnOff)//开关
+		{
+			if (playload->Action == Set)
+			{
+				if(playload->Parameters[0] < G_ONOFF_RSV)
+				{
+					light_onoff_all(playload->Parameters[0]);
+				}
+				
+			}
+			else if (playload->Action == Toggle)
+			{
+				/* code */
+			}
+			else if (playload->Action == Status)
+			{
+				/* code */
+			}
+			else if (playload->Action == Flash)
+			{
+				/* code */
+			}
+		}
+		else if (playload->Resource == Brightness)//亮度
+		{
+			if (playload->Action == Set)
+			{
+				// for (u8 i = 0; i < LIGHT_CNT; i++)
+				// {
+				// 	err = light_g_level_set_idx(i,playload->Parameters[0]*255,0,ST_TRANS_LIGHTNESS,&pub_list);
+				// }
+			}
+			else if (playload->Action == Get)
+			{
+				/* code */
+			}
+			else if (playload->Action == Delta)
+			{
+				/* code */
+			}
+			else if (playload->Action == Status)
+			{
+				/* code */
+			}
+		}
+		else if (playload->Resource == Temperature)//色温
+		{
+			/* code */
+		}
+		else if (playload->Resource == Turn_off_Delay)//延迟关灯
+		{
+			/* code */
+		}
+		else if (playload->Resource == Turn_on_or_off_timer)//定时
+		{
+			/* code */
+		}
+		else if (playload->Resource == Universal_Time)//UTC
+		{
+			/* code */
+		}
+		
     }
 
-#if DEBUG_CFG_CMD_GROUP_AK_EN
-    if(par_len >= 3){
-    	if(par[2] && (par[2]<=128) && BIT_IS_POW2(par[2])){
-    		blt_rxfifo.num = par[2];
-    	}
-	}
-#endif
+    // if(VD_GROUP_G_SET_NOACK != cb_par->op){
+    //     err = cb_vd_group_g_get(par, par_len, cb_par);
+    // }else{
+    //     err = 0;
+    // }
 
-    if(VD_GROUP_G_SET_NOACK != cb_par->op){
-        err = cb_vd_group_g_get(par, par_len, cb_par);
-    }else{
-        err = 0;
-    }
-
-    if(!err && pub_flag){
-        if(is_vd_onoff_op(sub_op)){ // only onoff need publish now
-            model_pub_check_set(ST_G_LEVEL_SET_PUB_NOW, cb_par->model, 1);
-        }
-    }
-    
+    // if(!err && pub_flag){
+    //     if(is_vd_onoff_op(sub_op)){ // only onoff need publish now
+    //         model_pub_check_set(ST_G_LEVEL_SET_PUB_NOW, cb_par->model, 1);
+    //     }
+    // }
     return err;
+
 }
 
 vd_group_g_func_t vd_group_g_func[] = {
