@@ -1528,10 +1528,10 @@ void light_ev_with_sleep(u32 count, u32 half_cycle_us)
 _USER_CAN_REDEFINE_ void show_ota_result(int result)
 {
 	if(result == OTA_SUCCESS){
-		light_ev_with_sleep(3, 1000*1000);	//0.5Hz shine for  6 second
+		light_ev_with_sleep(3, 500*1000);	//0.5Hz shine for  6 second
 	}
 	else{
-		light_ev_with_sleep(30, 100*1000);	//5Hz shine for  6 second
+		light_ev_with_sleep(10, 100*1000);	//5Hz shine for  6 second
 		//write_reg8(0x8000,result); ;while(1);  //debug which err lead to OTA fail
 	}
 }

@@ -183,11 +183,11 @@ user can change any one of factory_reset_serials, and also can change SERIALS_CN
 *****************************************/
 
 #ifndef FACTORY_RESET_SERIALS      // user can define in "user_app_config.h"
-#define FACTORY_RESET_SERIALS      { 0, 3, \
-                                     0, 3, \
-                                     0, 3, \
-                                     3, 30,\
-                                     3, 30,}
+#define FACTORY_RESET_SERIALS      { 0, 8, \
+                                     0, 8, \
+                                     0, 8, \
+                                     0, 8}
+									 //上电多久记录上电次数，上电多久重置记录次数
 #endif
 
 const u8 factory_reset_serials[] = FACTORY_RESET_SERIALS;

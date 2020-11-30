@@ -265,7 +265,7 @@ extern "C" {
 #define PWM_INV_W   (GET_PWM_INVERT_VAL(PWM_W, PWM_FUNC_W))
 
 #ifndef GPIO_LED
-#define GPIO_LED	PWM_R
+#define GPIO_LED	PWM_G
 #endif
 
 /////////////open SWS digital pullup to prevent MCU err, this is must ////////////
